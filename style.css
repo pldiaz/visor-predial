@@ -1,3 +1,10 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
 /* HEADER */
 .header {
   position: absolute;
@@ -20,19 +27,27 @@
 }
 
 .filtros input {
-  padding: 8px;
-  border-radius: 6px;
+  padding: 6px;
+  border-radius: 5px;
   border: none;
 }
 
-/* MAPA ajustado */
+.filtros button {
+  padding: 6px;
+  border: none;
+  border-radius: 5px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+/* MAPA */
 #map {
   width: 100%;
   height: calc(100vh - 60px);
   margin-top: 60px;
 }
 
-/* LEYENDA ABAJO */
+/* LEYENDA */
 .leyenda {
   position: absolute;
   bottom: 20px;
@@ -44,3 +59,16 @@
   font-size: 13px;
   z-index: 1000;
 }
+
+.color {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+}
+
+/* COLORES */
+.verde { background: #2ecc71; }
+.amarillo { background: #f1c40f; }
+.rojo { background: #e74c3c; }
+.gris { background: #95a5a6; }

@@ -38,33 +38,27 @@ const mapasBase = {
   "Esri Calles": esriCalles
 };
 
-// ===============================
-// MEDICIÓN MEJORADA (DRAW)
-// ===============================
-const drawnItems = new L.FeatureGroup();
-map.addLayer(drawnItems);
+// MEDICIÓN SIMPLE (estable)
+let linea;
 
-const drawControl = new L.Control.Draw({
-  draw: {
-    polygon: true,
-    polyline: true,
-    rectangle: true,
-    circle: false,
-    marker: false,
-    circlemarker: false
-  },
-  edit: {
-    featureGroup: drawnItems
+map.on('click', function(e) {
+  if (!linea) {
+    linea = L.polyline([e.latlng], {color: 'blue'}).addTo(map);
+  } else {
+    linea.addLatLng(e.latlng);
+
+    const distancia = linea.getLatLngs()
+      .reduce((acc, curr, i, arr) => {
+        if (i === 0) return 0;
+        return acc + curr.distanceTo(arr[i-1]);
+      }, 0);
+
+    alert("Distancia: " + (distancia/1000).toFixed(2) + " km");
+
+    map.removeLayer(linea);
+    linea = null;
   }
 });
-
-map.addControl(drawControl);
-
-map.on(L.Draw.Event.CREATED, function (e) {
-  const layer = e.layer;
-  drawnItems.addLayer(layer);
-});
-
 // ===============================
 // SIMBOLOGÍA
 // ===============================

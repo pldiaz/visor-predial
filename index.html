@@ -2,49 +2,39 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Visor Predial</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css">
-  <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <link rel="stylesheet" href="style.css"/>
+
 </head>
 
 <body>
 
-  <div class="panel">
-    <h2>Visor Predial</h2>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="titulo">Visor Predial AVP</div>
 
-    <input 
-      type="text" 
-      id="buscarCodigo" 
-      placeholder="Buscar por CODIGO..."
-    />
-
-    <button id="btnLimpiar">Limpiar búsqueda</button>
-
-    <div class="leyenda">
-      <h3>Leyenda</h3>
-      <div><span class="color liberado"></span> Liberado</div>
-      <div><span class="color proceso"></span> En proceso</div>
-      <div><span class="color pendiente"></span> Pendiente</div>
-      <div><span class="color otro"></span> Otro / sin estado</div>
+    <div class="filtros">
+      <input type="text" id="buscarCodigo" placeholder="Buscar CODIGO...">
+      <button id="btnLimpiar">Limpiar</button>
     </div>
   </div>
 
-<div class="header">
-  <div class="titulo">Visor Predial AVP</div>
-
-  <div class="filtros">
-    <input type="text" id="buscarCodigo" placeholder="Buscar CODIGO...">
-  </div>
-</div>
-
+  <!-- MAPA -->
   <div id="map"></div>
 
+  <!-- LEYENDA -->
+  <div class="leyenda">
+    <b>Leyenda</b><br>
+    <div><span class="color verde"></span> Liberado / Custodia</div>
+    <div><span class="color amarillo"></span> En proceso</div>
+    <div><span class="color rojo"></span> Pendiente</div>
+    <div><span class="color gris"></span> Otros</div>
+  </div>
+
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-measure/dist/leaflet-measure.js"></script>
   <script src="script.js"></script>
 
 </body>
