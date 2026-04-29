@@ -72,3 +72,36 @@ html, body {
 .amarillo { background: #f1c40f; }
 .rojo { background: #e74c3c; }
 .gris { background: #95a5a6; }
+
+.panel-filtro {
+  position: absolute;
+  top: 80px;
+  left: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  width: 250px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+  z-index: 2000;
+  display: none;
+}
+
+.fila {
+  margin-bottom: 10px;
+}
+
+.fila label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.fila input, .fila select {
+  width: 100%;
+  padding: 6px;
+}
+
+.acciones {
+  display: flex;
+  justify-content: space-between;
+}

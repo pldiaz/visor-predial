@@ -216,3 +216,49 @@ document.getElementById('btnLimpiar').addEventListener('click', function () {
     map.fitBounds(capaPredios.getBounds());
   }
 });
+
+// ABRIR PANEL
+document.getElementById('btnFiltrar').onclick = () => {
+  document.getElementById('panelFiltro').style.display = 'block';
+};
+
+// CERRAR PANEL
+document.getElementById('cerrarFiltro').onclick = () => {
+  document.getElementById('panelFiltro').style.display = 'none';
+};
+
+// APLICAR FILTRO
+document.getElementById('aplicarFiltro').onclick = () => {
+
+  const campo = document.getElementById('campoFiltro').value;
+  const condicion = document.getElementById('condicionFiltro').value;
+  const valor = document.getElementById('valorFiltro').value.toUpperCase();
+
+  capaPredios.eachLayer(layer => {
+
+    const props = layer.feature.properties;
+    const dato = (props[campo] || '').toString().toUpperCase();
+
+    let cumple = false;
+
+    if (condicion === 'igual') {
+      cumple = dato === valor;
+    }
+
+    if (condicion === 'contiene') {
+      cumple = dato.includes(valor);
+    }
+
+    if (cumple) {
+      layer.setStyle({
+        fillOpacity: 0.8
+      });
+    } else {
+      layer.setStyle({
+        fillOpacity: 0
+      });
+    }
+
+  });
+
+};

@@ -16,14 +16,45 @@
   <div class="header">
     <div class="titulo">Visor Predial AVP</div>
 
-    <div class="filtros">
-      <input type="text" id="buscarCodigo" placeholder="Buscar CODIGO...">
-      <button id="btnLimpiar">Limpiar</button>
-    </div>
+  <div class="filtros">
+    <input type="text" id="buscarCodigo" placeholder="Buscar CODIGO...">
+    <button id="btnFiltrar">Filtrar</button>
+    <button id="btnLimpiar">Limpiar</button>
   </div>
+    </div>
 
   <!-- MAPA -->
   <div id="map"></div>
+
+  <div id="panelFiltro" class="panel-filtro">
+  
+  <div class="fila">
+    <label>Campo</label>
+    <select id="campoFiltro">
+      <option value="ESTAD_AVANC">ESTAD_AVANC</option>
+      <option value="CODIGO">CODIGO</option>
+    </select>
+  </div>
+
+  <div class="fila">
+    <label>Condición</label>
+    <select id="condicionFiltro">
+      <option value="igual">Es igual a</option>
+      <option value="contiene">Contiene</option>
+    </select>
+  </div>
+
+  <div class="fila">
+    <label>Valor</label>
+    <input type="text" id="valorFiltro">
+  </div>
+
+  <div class="acciones">
+    <button id="aplicarFiltro">Aplicar</button>
+    <button id="cerrarFiltro">Cerrar</button>
+  </div>
+
+</div>
 
   <!-- LEYENDA -->
   <div class="leyenda">
