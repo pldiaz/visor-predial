@@ -1,12 +1,19 @@
+const map = L.map('map').setView([-12.0464, -77.0428], 12);
+
+L.control.measure({
+  primaryLengthUnit: 'meters',
+  secondaryLengthUnit: 'kilometers'
+}).addTo(map);
+
 const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
 
-const satelite = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png');
+const topografia = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png');
 
 osm.addTo(map);
 
 L.control.layers({
   "OpenStreetMap": osm,
-  "Topografía": satelite
+  "Topografía": topografia
 }).addTo(map);
 
 fetch('data/BG_Predios.geojson')
