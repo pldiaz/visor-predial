@@ -66,8 +66,11 @@ function obtenerEstado(properties) {
 }
 
 function getColor(estado) {
-  if (estado.includes('LIBERADO')) return '#2ecc71';
-  if (estado.includes('PROCESO')) return '#f1c40f';
+  if (estado.includes('EN CUSTODIA')) return '#2ecc71';
+  if (estado.includes('PAGADO')) return '#2ecc71';
+  if (estado.includes('CONSIGNADO')) return '#2ecc71';
+  if (estado.includes('CON RESOLUCION')) return '#2ecc71';
+  if (estado.includes('CON TASACION')) return '#f1c40f';
   if (estado.includes('PENDIENTE')) return '#e74c3c';
   return '#e74c3c';
 }
