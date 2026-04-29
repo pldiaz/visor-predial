@@ -2,9 +2,84 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+  font-family: Arial, sans-serif;
 }
 
 #map {
   width: 100%;
   height: 100vh;
+}
+
+.panel {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
+  width: 260px;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.25);
+}
+
+.panel h2 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+}
+
+.panel h3 {
+  margin: 14px 0 8px 0;
+  font-size: 14px;
+}
+
+#buscarCodigo {
+  width: 100%;
+  padding: 9px;
+  box-sizing: border-box;
+  border: 1px solid #aaa;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+#btnLimpiar {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: #333;
+  color: white;
+  cursor: pointer;
+}
+
+#btnLimpiar:hover {
+  background: #111;
+}
+
+.leyenda {
+  font-size: 13px;
+}
+
+.color {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  border: 1px solid #333;
+  vertical-align: middle;
+}
+
+.liberado {
+  background: #2ecc71;
+}
+
+.proceso {
+  background: #f1c40f;
+}
+
+.pendiente {
+  background: #e74c3c;
+}
+
+.otro {
+  background: #95a5a6;
 }
