@@ -5,7 +5,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap'
 }).addTo(map);
 
-fetch('data/predios.geojson')
+fetch('data/BG_Predios.geojson')
   .then(response => response.json())
   .then(data => {
     const capa = L.geoJSON(data, {
