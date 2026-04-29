@@ -56,6 +56,7 @@ function obtenerEstado(properties) {
   return (
     properties.ESTADO ||
     properties.Estado ||
+    properties.ESTAD_AVANC ||
     properties.estado ||
     properties.ESTADO_PREDIAL ||
     properties.estado_predial ||
