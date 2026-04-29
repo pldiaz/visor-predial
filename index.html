@@ -6,7 +6,8 @@
   <title>Visor Predial</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-measure/dist/leaflet-measure.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css">
+  <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -31,6 +32,14 @@
       <div><span class="color otro"></span> Otro / sin estado</div>
     </div>
   </div>
+
+<div class="header">
+  <div class="titulo">Visor Predial AVP</div>
+
+  <div class="filtros">
+    <input type="text" id="buscarCodigo" placeholder="Buscar CODIGO...">
+  </div>
+</div>
 
   <div id="map"></div>
 
