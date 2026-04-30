@@ -16,7 +16,7 @@ html, body {
   color: white;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 0 20px;
   z-index: 1000;
 }
@@ -38,6 +38,13 @@ html, body {
   border-radius: 5px;
   margin-left: 5px;
   cursor: pointer;
+}
+
+.filtros {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 40px; /* mueve todo a la izquierda */
 }
 
 /* MAPA */
