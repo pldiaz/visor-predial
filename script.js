@@ -218,6 +218,30 @@ document.getElementById('btnLimpiar').addEventListener('click', function () {
 });
 
 // ABRIR PANEL
+let valoresUnicos = [];
+
+document.getElementById('campoFiltro').addEventListener('change', function() {
+
+  const campo = this.value;
+
+  const valores = new Set();
+
+  // recorrer todos los predios
+  capaPredios.eachLayer(layer => {
+
+    const valor = layer.feature.properties[campo];
+
+    if (valor !== null && valor !== undefined && valor !== '') {
+      valores.add(valor.toString());
+    }
+
+  });
+
+  // convertir a array
+  valoresUnicos = Array.from(valores);
+
+});
+
 document.getElementById('btnFiltrar').onclick = () => {
   document.getElementById('panelFiltro').style.display = 'block';
 };
@@ -262,3 +286,4 @@ document.getElementById('aplicarFiltro').onclick = () => {
   });
 
 };
+

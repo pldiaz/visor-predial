@@ -112,3 +112,23 @@ html, body {
   display: flex;
   justify-content: space-between;
 }
+
+/* 🔥 LISTA DESPLEGABLE VALOR */
+#listaValores {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 100%;
+  z-index: 3000;
+}
+
+#listaValores div {
+  padding: 5px;
+  cursor: pointer;
+}
+
+#listaValores div:hover {
+  background: #eee;
+}
