@@ -160,7 +160,18 @@ fetch('data/BG_Predios.geojson')
     console.error('Error cargando GeoJSON:', error);
     alert('No se pudo cargar el archivo data/BG_Predios.geojson');
   });
+  
+// 🔥 generar valores iniciales (por defecto)
+const campoInicial = document.getElementById('campoFiltro').value;
 
+const valores = new Set();
+
+data.features.forEach(f => {
+  const val = f.properties[campoInicial];
+  if (val) valores.add(val.toString());
+});
+
+valoresUnicos = Array.from(valores);
 // ===============================
 // BUSCADOR POR CODIGO
 // ===============================
