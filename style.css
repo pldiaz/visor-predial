@@ -14,34 +14,11 @@ html, body {
   height: 60px;
   background: #2c3e50;
   color: white;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 0 20px;
-  box-sizing: border-box;
   z-index: 1000;
-}
-
-.titulo {
-  flex: 1;
-}
-
-/* 🔥 CLAVE */
-.filtros {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  max-width: 400px;   /* limita ancho */
-  width: 100%;
-  justify-content: flex-end;
-}
-
-/* input */
-#buscarCodigo {
-  width: 180px;
-  padding: 6px;
 }
 
 .titulo {
@@ -127,25 +104,4 @@ html, body {
 .acciones {
   display: flex;
   justify-content: space-between;
-}
-
-.sugerencias {
-  position: absolute;
-  top: 50px;
-  right: 20px;
-  background: white;
-  max-height: 200px;
-  overflow-y: auto;
-  width: 200px;
-  border: 1px solid #ccc;
-  z-index: 2000;
-}
-
-.sugerencias div {
-  padding: 5px;
-  cursor: pointer;
-}
-
-.sugerencias div:hover {
-  background: #eee;
 }
