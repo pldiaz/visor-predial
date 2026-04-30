@@ -1,15 +1,44 @@
 const map = L.map('map').setView([-12.0464, -77.0428], 12);
 
-// ================= MAPAS BASE =================
-const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+// ===============================
+// MAPAS BASE
+// ===============================
+const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 22,
+  attribution: '© OpenStreetMap'
+});
+
+const topografia = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+  maxZoom: 17,
+  attribution: '© OpenTopoMap'
+});
+
+const esriSatelital = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', 
+  {
+    maxZoom: 22,
+    attribution: 'Tiles © Esri'
+  }
+);
+
+const esriCalles = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', 
+  {
+    maxZoom: 22,
+    attribution: 'Tiles © Esri'
+  }
+);
+
 osm.addTo(map);
 
-// ================= VARIABLES =================
-let capaPredios;
-let capaSeleccionada = null;
-let listaCodigos = [];
+const mapasBase = {
+  "OpenStreetMap": osm,
+  "Topografía": topografia,
+  "Esri Satelital": esriSatelital,
+  "Esri Calles": esriCalles
+};
 
-// ================= MEDICIÓN =================
+// MEDICIÓN SIMPLE (estable)
 let linea;
 
 map.on('click', function(e) {
@@ -30,31 +59,83 @@ map.on('click', function(e) {
     linea = null;
   }
 });
+// ===============================
+// SIMBOLOGÍA
+// ===============================
+function obtenerEstado(properties) {
+  return (
+    properties.ESTADO ||
+    properties.Estado ||
+    properties.ESTAD_AVANC ||
+    properties.estado ||
+    properties.ESTADO_PREDIAL ||
+    properties.estado_predial ||
+    properties.SITUACION ||
+    properties.Situacion ||
+    ''
+  ).toString().trim().toUpperCase();
+}
 
-// ================= CARGA ÚNICA =================
+function getColor(estado) {
+  estado = estado.toUpperCase().trim();
+  if (estado.includes('EN CUSTODIA')) return '#2ecc71';
+  if (estado.includes('PAGADO')) return '#2ecc71';
+  if (estado.includes('CONSIGNADO')) return '#2ecc71';
+  if (estado.includes('CON RESOLUCION')) return '#2ecc71';
+  if (estado.includes('CON TASACION')) return '#f1c40f';
+  if (estado.includes('PENDIENTE')) return '#e74c3c';
+  return '#95a5a6';
+}
+
+function estiloPredio(feature) {
+  const estado = obtenerEstado(feature.properties);
+
+  return {
+    color: '#b00000',
+    weight: 1.5,
+    fillColor: getColor(estado),
+    fillOpacity: 0.45
+  };
+}
+
+function estiloSeleccionado() {
+  return {
+    color: '#0000ff',
+    weight: 4,
+    fillOpacity: 0.65
+  };
+}
+
+// ===============================
+// VARIABLES
+// ===============================
+let capaPredios;
+let capaSeleccionada = null;
+
+// ===============================
+// CARGAR GEOJSON
+// ===============================
 fetch('data/BG_Predios.geojson')
-  .then(r => r.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('No se encontró el archivo GeoJSON');
+    }
+    return response.json();
+  })
   .then(data => {
-
-    // guardar códigos
-    listaCodigos = data.features.map(f =>
-      (f.properties.CODIGO || '').toString()
-    );
-
-    // crear capa
     capaPredios = L.geoJSON(data, {
-      style: {
-        color: '#b00000',
-        weight: 1.5,
-        fillOpacity: 0.4
-      },
-      onEachFeature: function (feature, layer) {
+      style: estiloPredio,
 
-        let popup = "";
-        for (const campo in feature.properties) {
-          popup += `<b>${campo}:</b> ${feature.properties[campo]}<br>`;
+      onEachFeature: function (feature, layer) {
+        let popup = '<div class="popup">';
+
+        if (feature.properties) {
+          for (const campo in feature.properties) {
+            popup += `<b>${campo}:</b> ${feature.properties[campo]}<br>`;
+          }
         }
 
+        popup += '</div>';
         layer.bindPopup(popup);
 
         layer.on('click', function () {
@@ -63,79 +144,90 @@ fetch('data/BG_Predios.geojson')
           }
 
           capaSeleccionada = layer;
-          layer.setStyle({ color: 'blue', weight: 3 });
+          layer.setStyle(estiloSeleccionado());
+          layer.bringToFront();
         });
-
       }
     }).addTo(map);
 
+    L.control.layers(mapasBase, {
+      "Predios": capaPredios
+    }).addTo(map);
+
     map.fitBounds(capaPredios.getBounds());
+  })
+  .catch(error => {
+    console.error('Error cargando GeoJSON:', error);
+    alert('No se pudo cargar el archivo data/BG_Predios.geojson');
   });
 
+// ===============================
+// BUSCADOR POR CODIGO
+// ===============================
+document.getElementById('buscarCodigo').addEventListener('keyup', function (e) {
+  const valor = e.target.value.trim().toUpperCase();
 
-// ================= AUTOCOMPLETE =================
-const input = document.getElementById("buscarCodigo");
-const lista = document.getElementById("listaSugerencias");
+  if (!capaPredios || valor.length < 2) return;
 
-input.addEventListener("keyup", function() {
+  let encontrado = false;
 
-  const valor = this.value.toUpperCase();
-  lista.innerHTML = "";
+  capaPredios.eachLayer(function (layer) {
+    const props = layer.feature.properties;
+    const codigo = (
+      props.CODIGO ||
+      props.Codigo ||
+      props.codigo ||
+      props.COD_PREDIO ||
+      ''
+    ).toString().toUpperCase();
 
-  if (valor.length < 2) return;
+    if (codigo.includes(valor) && !encontrado) {
+      encontrado = true;
 
-  listaCodigos
-    .filter(c => c.toUpperCase().includes(valor))
-    .slice(0, 10)
-    .forEach(codigo => {
+      if (capaSeleccionada) {
+        capaPredios.resetStyle(capaSeleccionada);
+      }
 
-      const div = document.createElement("div");
-      div.textContent = codigo;
+      capaSeleccionada = layer;
+      layer.setStyle(estiloSeleccionado());
+      layer.bringToFront();
 
-      div.onclick = () => {
-        input.value = codigo;
-        lista.innerHTML = "";
-        zoomACodigo(codigo);
-      };
+      map.fitBounds(layer.getBounds(), {
+        maxZoom: 18
+      });
 
-      lista.appendChild(div);
-    });
-
-});
-
-// ================= ZOOM =================
-function zoomACodigo(codigo) {
-
-  capaPredios.eachLayer(layer => {
-    const cod = (layer.feature.properties.CODIGO || '').toString();
-
-    if (cod === codigo) {
-      map.fitBounds(layer.getBounds());
       layer.openPopup();
     }
   });
+});
 
-}
+// ===============================
+// LIMPIAR BÚSQUEDA
+// ===============================
+document.getElementById('btnLimpiar').addEventListener('click', function () {
+  document.getElementById('buscarCodigo').value = '';
 
-// ================= LIMPIAR =================
-document.getElementById('btnLimpiar').onclick = () => {
-  input.value = "";
-  lista.innerHTML = "";
+  if (capaSeleccionada && capaPredios) {
+    capaPredios.resetStyle(capaSeleccionada);
+    capaSeleccionada = null;
+  }
 
   if (capaPredios) {
-    map.setView([-12.0464, -77.0428], 12);
+    map.fitBounds(capaPredios.getBounds());
   }
-};
+});
 
-// ================= FILTRO =================
+// ABRIR PANEL
 document.getElementById('btnFiltrar').onclick = () => {
   document.getElementById('panelFiltro').style.display = 'block';
 };
 
+// CERRAR PANEL
 document.getElementById('cerrarFiltro').onclick = () => {
   document.getElementById('panelFiltro').style.display = 'none';
 };
 
+// APLICAR FILTRO
 document.getElementById('aplicarFiltro').onclick = () => {
 
   const campo = document.getElementById('campoFiltro').value;
@@ -149,12 +241,23 @@ document.getElementById('aplicarFiltro').onclick = () => {
 
     let cumple = false;
 
-    if (condicion === 'igual') cumple = dato === valor;
-    if (condicion === 'contiene') cumple = dato.includes(valor);
+    if (condicion === 'igual') {
+      cumple = dato === valor;
+    }
 
-    layer.setStyle({
-      fillOpacity: cumple ? 0.8 : 0
-    });
+    if (condicion === 'contiene') {
+      cumple = dato.includes(valor);
+    }
+
+    if (cumple) {
+      layer.setStyle({
+        fillOpacity: 0.8
+      });
+    } else {
+      layer.setStyle({
+        fillOpacity: 0
+      });
+    }
 
   });
 
