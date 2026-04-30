@@ -122,56 +122,55 @@ fetch('data/BG_Predios.geojson')
     }
     return response.json();
   })
-  .then(data => {
-    capaPredios = L.geoJSON(data, {
-      style: estiloPredio,
 
-      onEachFeature: function (feature, layer) {
-        let popup = '<div class="popup">';
+.then(data => {
+  capaPredios = L.geoJSON(data, {
+    style: estiloPredio,
 
-        if (feature.properties) {
-          for (const campo in feature.properties) {
-            popup += `<b>${campo}:</b> ${feature.properties[campo]}<br>`;
-          }
+    onEachFeature: function (feature, layer) {
+      let popup = '<div class="popup">';
+
+      if (feature.properties) {
+        for (const campo in feature.properties) {
+          popup += `<b>${campo}:</b> ${feature.properties[campo]}<br>`;
+        }
+      }
+
+      popup += '</div>';
+      layer.bindPopup(popup);
+
+      layer.on('click', function () {
+        if (capaSeleccionada) {
+          capaPredios.resetStyle(capaSeleccionada);
         }
 
-        popup += '</div>';
-        layer.bindPopup(popup);
+        capaSeleccionada = layer;
+        layer.setStyle(estiloSeleccionado());
+        layer.bringToFront();
+      });
+    }
+  }).addTo(map);
 
-        layer.on('click', function () {
-          if (capaSeleccionada) {
-            capaPredios.resetStyle(capaSeleccionada);
-          }
+  L.control.layers(mapasBase, {
+    "Predios": capaPredios
+  }).addTo(map);
 
-          capaSeleccionada = layer;
-          layer.setStyle(estiloSeleccionado());
-          layer.bringToFront();
-        });
-      }
-    }).addTo(map);
+  map.fitBounds(capaPredios.getBounds());
 
-    L.control.layers(mapasBase, {
-      "Predios": capaPredios
-    }).addTo(map);
+  // 🔥 AQUÍ VA (NO EN OTRO LADO)
+  const campoInicial = document.getElementById('campoFiltro').value;
 
-    map.fitBounds(capaPredios.getBounds());
-  })
-  .catch(error => {
-    console.error('Error cargando GeoJSON:', error);
-    alert('No se pudo cargar el archivo data/BG_Predios.geojson');
+  const valores = new Set();
+
+  data.features.forEach(f => {
+    const val = f.properties[campoInicial];
+    if (val) valores.add(val.toString());
   });
-  
-// 🔥 generar valores iniciales (por defecto)
-const campoInicial = document.getElementById('campoFiltro').value;
 
-const valores = new Set();
+  valoresUnicos = Array.from(valores);
 
-data.features.forEach(f => {
-  const val = f.properties[campoInicial];
-  if (val) valores.add(val.toString());
-});
+})
 
-valoresUnicos = Array.from(valores);
 // ===============================
 // BUSCADOR POR CODIGO
 // ===============================
