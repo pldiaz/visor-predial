@@ -164,8 +164,65 @@ fetch('data/BG_Predios.geojson')
 // ===============================
 // BUSCADOR POR CODIGO
 // ===============================
-document.getElementById('buscarCodigo').addEventListener('keyup', function (e) {
-  const valor = e.target.value.trim().toUpperCase();
+let listaCodigos = [];
+
+// extraer códigos
+fetch('data/BG_Predios.geojson')
+  .then(r => r.json())
+  .then(data => {
+
+    listaCodigos = data.features.map(f =>
+      (f.properties.CODIGO || '').toString()
+    );
+
+  });
+
+// autocomplete
+const input = document.getElementById("buscarCodigo");
+const lista = document.getElementById("listaSugerencias");
+
+input.addEventListener("keyup", function() {
+
+  const valor = this.value.toUpperCase();
+  lista.innerHTML = "";
+
+  if (valor.length < 2) return;
+
+  const coincidencias = listaCodigos
+    .filter(c => c.toUpperCase().includes(valor))
+    .slice(0, 10);
+
+  coincidencias.forEach(codigo => {
+
+    const div = document.createElement("div");
+    div.textContent = codigo;
+
+    div.onclick = () => {
+      input.value = codigo;
+      lista.innerHTML = "";
+      zoomACodigo(codigo);
+    };
+
+    lista.appendChild(div);
+  });
+
+});
+
+// zoom
+function zoomACodigo(codigo) {
+
+  capaPredios.eachLayer(layer => {
+
+    const cod = (layer.feature.properties.CODIGO || '').toString();
+
+    if (cod === codigo) {
+      map.fitBounds(layer.getBounds());
+      layer.openPopup();
+    }
+
+  });
+
+}
 
   if (!capaPredios || valor.length < 2) return;
 
